@@ -1,1 +1,3 @@
-rootProject.name = 'rococo'
+rootProject.name = 'rococo-graduation-project'
+include 'rococo-auth'
+

@@ -5,6 +5,7 @@ plugins {
     id 'com.google.cloud.tools.jib' version '3.3.2'
 }
 
+group = 'guru.qa'
 version = '0.0.1-SNAPSHOT'
 
 dependencies {
@@ -13,35 +14,37 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
     implementation "org.springframework.boot:spring-boot-starter-validation"
-    implementation "org.springframework.security:spring-security-oauth2-authorization-server:${project.ext.oauth2AuthorizationServerVersion}"
-    implementation "com.google.code.findbugs:jsr305:${project.ext.jsr305Version}"
-    annotationProcessor "org.projectlombok:lombok:${project.ext.lombokVersion}"
-    compileOnly "org.projectlombok:lombok:${project.ext.lombokVersion}"
-    runtimeOnly "mysql:mysql-connector-java:${project.ext.mysqlDriverVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+    implementation "org.springframework.security:spring-security-oauth2-authorization-server:1.1.1"
+    implementation "com.google.code.findbugs:jsr305:3.0.2"
+    annotationProcessor 'org.projectlombok:lombok:1.18.26'
+    compileOnly "org.projectlombok:lombok:1.18.22"
+    implementation 'org.springframework.kafka:spring-kafka:3.0.7'
+    runtimeOnly 'org.postgresql:postgresql'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-jib {
-    container {
-        ports = ['9000']
-        jvmFlags = ["-Dspring.profiles.active=${System.env.PROFILE}"]
-        creationTime = 'USE_CURRENT_TIMESTAMP'
-    }
-    from {
-        image = "${project.ext.dockerImage}"
-        platforms {
-            platform {
-                architecture = "${project.ext.dockerArch}"
-                os = 'linux'
-            }
-        }
-    }
-    to {
-        image = "${project.ext.registry}/${project.name}"
-        tags = ['latest', "${project.version}"]
-    }
-}
+//jib {
+//    container {
+//        ports = ['9000']
+//        jvmFlags = ["-Dspring.profiles.active=${System.env.PROFILE}"]
+//        creationTime = 'USE_CURRENT_TIMESTAMP'
+//    }
+//    from {
+//        image = "${project.ext.dockerImage}"
+//        platforms {
+//            platform {
+//                architecture = "${project.ext.dockerArch}"
+//                os = 'linux'
+//            }
+//        }
+//    }
+//    to {
+//        image = "${project.ext.registry}/${project.name}"
+//        tags = ['latest', "${project.version}"]
+//    }
+//}
 
 tasks.named('test') {
     useJUnitPlatform()
