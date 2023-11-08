@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group = 'guru.qa'
+group = 'guru.qa.rococo'
 sourceCompatibility = '17'
 
 subprojects {
