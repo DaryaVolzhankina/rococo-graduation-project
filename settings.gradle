@@ -1,3 +1,4 @@
 rootProject.name = 'rococo-graduation-project'
+include 'rococo-gateway'
 include 'rococo-auth'
-
+include 'rococo-userdata'
