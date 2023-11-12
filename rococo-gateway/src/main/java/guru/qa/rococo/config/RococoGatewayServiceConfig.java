@@ -13,10 +13,13 @@ public class RococoGatewayServiceConfig {
     public static final int THREE_MB = 3145728;
 
     private final String rococoUserdataBaseUri;
+    private final String rococoArtistBaseUri;
 
     @Autowired
-    public RococoGatewayServiceConfig(@Value("${rococo-userdata.base-uri}") String rococoUserdataBaseUri) {
+    public RococoGatewayServiceConfig(@Value("${rococo-userdata.base-uri}") String rococoUserdataBaseUri,
+                                      @Value("${rococo-artist.base-uri}") String rococoArtistBaseUri) {
         this.rococoUserdataBaseUri = rococoUserdataBaseUri;
+        this.rococoArtistBaseUri = rococoArtistBaseUri;
     }
 
     @Bean
