@@ -11,7 +11,6 @@ repositories {
     mavenCentral()
 }
 
-
 sourceSets {
     main {
         java {
@@ -22,25 +21,19 @@ sourceSets {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation('org.springframework.boot:spring-boot-starter-web-services') {
-        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
-    }
-    implementation 'org.springframework.data:spring-data-commons'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-    implementation "org.springframework.boot:spring-boot-starter-validation"
-    implementation "org.springframework.boot:spring-boot-starter-actuator"
-    implementation 'net.devh:grpc-client-spring-boot-starter:2.14.0.RELEASE'
-    implementation "org.springframework:spring-webflux"
-    implementation "io.projectreactor.netty:reactor-netty"
+    implementation 'org.springframework.boot:spring-boot-starter-web-services'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.kafka:spring-kafka:3.0.7'
+    implementation 'net.devh:grpc-server-spring-boot-starter:2.14.0.RELEASE'
 
+    runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 //docker {
 //    dependsOn build
-//    name "dtuchs/rococo-gateway:${project.version}"
-//    tag 'latest', 'dtuchs/rococo-gateway:latest'
+//    name "dtuchs/niffler-userdata:${project.version}"
+//    tag 'latest', 'dtuchs/niffler-userdata:latest'
 //    files bootJar.archiveFile
 //    buildArgs([APP_VER: project.version, DOCKER: project.ext.dockerImage])
 //    noCache true
@@ -50,6 +43,7 @@ dependencies {
 //    workingDir "${buildDir}"
 //    commandLine 'bash', '-c', "docker rmi -f \$(docker images | grep 'niffler')\n"
 //}
+
 
 tasks.named('bootJar') {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE

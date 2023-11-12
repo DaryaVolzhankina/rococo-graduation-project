@@ -5,7 +5,6 @@ import jakarta.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -17,24 +16,23 @@ import reactor.core.publisher.Mono;
 import java.net.URI;
 
 @Component
-@Qualifier("rest")
-public class RestUserDataService {
-    private static final Logger LOG = LoggerFactory.getLogger(RestUserDataService.class);
+public class UserDataService {
+    private static final Logger LOG = LoggerFactory.getLogger(UserDataService.class);
 
     private final WebClient webClient;
     private final String rococoUserdataBaseUri;
 
     @Autowired
-    public RestUserDataService(WebClient webClient,
-                               @Value("${rococo-userdata.base-uri}") String rococoUserdataBaseUri) {
+    public UserDataService(WebClient webClient,
+                           @Value("${rococo-userdata.base-uri}") String rococoUserdataBaseUri) {
         this.webClient = webClient;
         this.rococoUserdataBaseUri = rococoUserdataBaseUri;
     }
 
     public @Nonnull
     UserJson updateUser(@Nonnull UserJson user) {
-        return webClient.post()
-                .uri(rococoUserdataBaseUri + "/user")
+        return webClient.patch()
+                .uri(rococoUserdataBaseUri + "/api/user")
                 .body(Mono.just(user), UserJson.class)
                 .retrieve()
                 .bodyToMono(UserJson.class)
@@ -42,10 +40,10 @@ public class RestUserDataService {
     }
 
     public @Nonnull
-    UserJson user(@Nonnull String username) {
+    UserJson getUser(@Nonnull String username) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("username", username);
-        URI uri = UriComponentsBuilder.fromHttpUrl(rococoUserdataBaseUri + "/user").queryParams(params).build().toUri();
+        URI uri = UriComponentsBuilder.fromHttpUrl(rococoUserdataBaseUri + "/api/user").queryParams(params).build().toUri();
 
         return webClient.get()
                 .uri(uri)

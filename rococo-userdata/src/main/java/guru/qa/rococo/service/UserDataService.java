@@ -42,8 +42,8 @@ public class UserDataService {
     }
 
     public @Nonnull
-    UserJson updateUser(@Nonnull String username, @Nonnull UserJson user) {
-        UserEntity userDataEntity = getRequiredUser(username);
+    UserJson updateUser(@Nonnull UserJson user) {
+        UserEntity userDataEntity = getRequiredUser(user.getUsername());
         userDataEntity.setFirstname(user.getFirstname());
         userDataEntity.setLastname(user.getLastname());
         userDataEntity.setAvatar(user.getAvatar() != null ? user.getAvatar().getBytes(StandardCharsets.UTF_8) : null);
