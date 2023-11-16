@@ -32,6 +32,10 @@ rococo-userdata:
   base-uri: 'http://127.0.0.1:8089'
 rococo-artist:
   base-uri: 'http://127.0.0.1:8081'
+rococo-museum:
+  base-uri: 'http://127.0.0.1:8085'
+rococo-painting:
+  base-uri: 'http://127.0.0.1:8083'
 rococo-front:
   base-uri: 'http://127.0.0.1:3000'
 
@@ -51,6 +55,10 @@ rococo-userdata:
   base-uri: 'http://userdata.rococo.dc:8089'
 rococo-artist:
   base-uri: 'http://artist.rococo.dc:8081'
+rococo-museum:
+  base-uri: 'http://museum.rococo.dc:8085'
+rococo-painting:
+  base-uri: 'http://painting.rococo.dc:8083'
 rococo-front:
   base-uri: 'http://client.rococo.dc'
 ---
