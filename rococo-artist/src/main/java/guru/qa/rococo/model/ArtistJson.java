@@ -53,7 +53,7 @@ public class ArtistJson {
 
     public static ArtistJson fromEntity(ArtistEntity entity) {
         ArtistJson usr = new ArtistJson();
-        byte[] photo = entity.getPhoto();
+        byte[] photo = entity .getPhoto();
         usr.setId(entity.getId());
         usr.setBiography(entity.getBiography());
         usr.setName(entity.getName());

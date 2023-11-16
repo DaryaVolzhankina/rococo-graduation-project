@@ -16,7 +16,7 @@ public class ArtistJson {
     @Size(max = 255, message = "Biography can`t be longer than 255 characters")
     private String biography;
     @JsonProperty("photo")
-    @Size(max = RococoGatewayServiceConfig.THREE_MB)
+    @Size(max = RococoGatewayServiceConfig.TWENTY_MB)
     private String photo;
 
     public ArtistJson() {
