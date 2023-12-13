@@ -1,3 +1,7 @@
+# Rococo
+
+Rococo - выпускной проект для студентов 3 потока курса qa-guru java advanced. Представлен в виде сайта для хранения информации о художниках, музеях и картинах.
+
 ## **Технологии, использованные в Rococo**
 
 - [Spring Authorization Server](https://spring.io/projects/spring-authorization-server)
@@ -9,7 +13,6 @@
 - [Apache Kafka](https://developer.confluent.io/quickstart/kafka-docker/)
 - [Postgres](https://www.postgresql.org/about/)
 - [Thymeleaf](https://www.thymeleaf.org/)
-- [Jakarta Bean Validation](https://beanvalidation.org/)
 - [JUnit 5 (Extensions, Resolvers, etc)](https://junit.org/junit5/docs/current/user-guide/)
 - [Retrofit 2](https://square.github.io/retrofit/)
 - [Allure](https://docs.qameta.io/allure/)
@@ -20,17 +23,23 @@
 - [Gradle 8.0](https://docs.gradle.org/8.0/release-notes.html)
 - And much more:)
 
+# Архитектура приложения
+
+Приложение Rangiffler построено на основе микросервисной архитектуры, среди звеньев которой можно выделить:
+1. **auth** - аутентификация и авторизация (*backend*).
+2. **gateway** - связывание (прокси) клиента с необходимыми микросервисами (*backend*).
+3. **userdata** - информация о пользователе: как личные данные, так и список друзей (*backend*).
+4. **museum** - данные о музеях (*backend*).
+5. **artist** - сведения об артистах (*backend*).
+6. **painting** - сведения о картинах (*backend*).
+7. **client** - интерфейс приложения, с которым взаимодействует пользователь (*frontend*).
+
+![Архитектура приложения](img/scheme.png)
 
 **Минимальные предусловия для работы с проектом Rococo**
 
 
 #### 1. Установить docker (Если не установлен)
-
-[Установка на Windows](https://docs.docker.com/desktop/install/windows-install/)
-
-[Установка на Mac](https://docs.docker.com/desktop/install/mac-install/) (Для ARM и Intel разные пакеты)
-
-[Установка на Linux](https://docs.docker.com/desktop/install/linux-install/)
 
 После установки и запуска docker daemon необходимо убедиться в работе команд docker, например `docker -v`:
 
@@ -126,7 +135,7 @@ Java HotSpot(TM) 64-Bit Server VM (build 17.0.8+9-LTS-211, mixed mode, sharing)
 [Инструкция](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
 Рекомендованная версия Node.js - 18.13.0 (LTS)
 
-# Запуск Rococo локальное в IDE:
+# Запуск Rococo локально в IDE:
 
 #### 1. Перейти в папку rococo-client
 
