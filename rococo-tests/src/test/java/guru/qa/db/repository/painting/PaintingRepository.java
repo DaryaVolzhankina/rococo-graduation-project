@@ -8,5 +8,6 @@ public interface PaintingRepository {
 
     void createPainting(PaintingEntity paintingEntity);
     void deletePainting(PaintingEntity paintingEntity);
-    void deleteAllArtistsPaintingsById(UUID artistId);
+    void deleteAllPaintingsByArtistId(UUID artistId);
+    void deleteAllPaintingsByMuseumId(UUID museumId);
 }

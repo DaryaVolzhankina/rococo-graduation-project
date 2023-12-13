@@ -8,4 +8,5 @@ public interface PaintingDao {
     void createPainting(PaintingEntity paintingEntity);
     void deletePainting(PaintingEntity paintingEntity);
     void deleteAllArtistsPaintingsById(UUID artistId);
+    void deleteAllPaintingsByMuseumId(UUID museumId);
 }

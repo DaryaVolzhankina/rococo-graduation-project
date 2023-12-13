@@ -1,76 +1,50 @@
 package guru.qa.tests;
 
-import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.Selenide;
-import com.github.javafaker.Faker;
 import guru.qa.db.model.auth.AuthUserEntity;
 import guru.qa.jupiter.annotation.DBUser;
 import guru.qa.pages.LoginPage;
+import guru.qa.pages.MainPage;
 import guru.qa.pages.RegistrationPage;
+import io.qameta.allure.Epic;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.codeborne.selenide.Selenide.page;
+import static guru.qa.utils.FakerUtils.generateRandomUsername;
+
+@Epic("Регистрация")
+@DisplayName("Регистрация")
 public class RegistrationTests extends BaseWebTest {
     private static final String DEFAULT_PASSWORD = "12345";
-    private final Faker faker = new Faker();
 
     @Test
+    @DisplayName("Регистрация несуществующего в бд пользователя")
     void mainPageShouldBeVisibleAfterRegistration() {
-        String username = faker.name().username();
-        Selenide.open(CFG.rococoAuthUrl() + LoginPage.URL);
-        pages.loginPage()
-                .getRegisterBtn()
-                .click();
-        pages.registrationPage()
-                .getUsernameField()
-                .setValue(username);
-        pages.registrationPage()
-                .getPasswordField()
-                .setValue(DEFAULT_PASSWORD);
-        pages.registrationPage()
-                .getPasswordSubmitField()
-                .setValue(DEFAULT_PASSWORD);
-        pages.registrationPage()
-                .getRegisterBtn()
-                .click();
-        pages.registrationPage()
-                .getLoginBtn()
-                .click();
-        pages.loginPage()
-                .getUsernameField()
-                .setValue(username);
-        pages.loginPage()
-                .getPasswordField()
-                .setValue(DEFAULT_PASSWORD);
-        pages.loginPage()
-                .getLoginBtn()
-                .click();
-        pages.mainPage()
-                .getLoginButton()
-                .shouldNotBe(Condition.visible);
-        pages.mainPage()
-                .getProfileIcon()
-                .shouldBe(Condition.visible);
+        String username = generateRandomUsername();
+
+        page(LoginPage.class)
+                .open()
+                .clickRegisterButton()
+                .enterCredentials(username, DEFAULT_PASSWORD)
+                .clickRegisterBtn()
+                .clickLoginBtn()
+                .enterCredentials(username, DEFAULT_PASSWORD)
+                .clickLoginButton();
+
+        page(MainPage.class)
+                .loginButtonShouldNotBeVisible()
+                .profileIconShouldBeVisible();
     }
 
     @Test
     @DBUser
+    @DisplayName("Регистрация существующего в бд пользователя")
     void registerExistingUser(AuthUserEntity user) {
-        Selenide.open(CFG.rococoAuthUrl() + RegistrationPage.URL);
-
-        pages.registrationPage()
-                .getUsernameField()
-                .setValue(user.getUsername());
-        pages.registrationPage()
-                .getPasswordField()
-                .setValue(user.getPassword());
-        pages.registrationPage()
-                .getPasswordSubmitField()
-                .setValue(user.getPassword());
-        pages.registrationPage()
-                .getRegisterBtn()
-                .click();
-        pages.registrationPage()
-                .getErrorNotification()
-                .shouldHave(Condition.text("Username `" + user.getUsername() + "` already exists"));
+        page(LoginPage.class)
+                .open()
+                .clickRegisterButton()
+                .enterCredentials(user.getUsername(), DEFAULT_PASSWORD)
+                .clickRegisterBtn()
+                .checkErrorNotificationMessage("Username `" + user.getUsername() + "` already exists", RegistrationPage.class);
     }
 }

@@ -3,6 +3,8 @@ package guru.qa.jupiter.extension;
 import guru.qa.db.model.artist.ArtistEntity;
 import guru.qa.db.repository.artist.ArtistRepository;
 import guru.qa.db.repository.artist.ArtistRepositorySpringJdbc;
+import guru.qa.db.repository.painting.PaintingRepository;
+import guru.qa.db.repository.painting.PaintingRepositorySpringJdbc;
 import guru.qa.jupiter.annotation.Artist;
 import guru.qa.jupiter.annotation.GeneratedArtist;
 import guru.qa.jupiter.annotation.Painting;
@@ -19,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static guru.qa.utils.DataUtils.imageByClasspath;
+import static guru.qa.utils.FakerUtils.generateRandomSentence;
 
 
 public class ArtistExtension implements BeforeEachCallback, AfterEachCallback, ParameterResolver {
@@ -31,9 +34,9 @@ public class ArtistExtension implements BeforeEachCallback, AfterEachCallback, P
     public void beforeEach(ExtensionContext extensionContext) throws Exception {
         Map<String, Artist> artistsForTest = artistForTest(extensionContext);
         for (Map.Entry<String, Artist> entry : artistsForTest.entrySet()) {
-            ArtistEntity user = createArtistForTest();
+            ArtistEntity artist = createArtistForTest();
             extensionContext.getStore(entry.getKey().contains(GeneratedArtist.ArtistSelector.NESTED.name()) ? NESTED : OUTER)
-                    .put(extensionContext.getUniqueId(), user);
+                    .put(extensionContext.getUniqueId(), artist);
         }
     }
 
@@ -43,10 +46,17 @@ public class ArtistExtension implements BeforeEachCallback, AfterEachCallback, P
         Artist artistAnnotation = context.getRequiredTestMethod().getAnnotation(Artist.class);
         if (paintingAnnotation != null || artistAnnotation != null) {
             ArtistRepository artistRepository = new ArtistRepositorySpringJdbc();
+            PaintingRepository paintingRepository = new PaintingRepositorySpringJdbc();
             ArtistEntity outerArtist = (ArtistEntity) context.getStore(OUTER).get(context.getUniqueId());
             ArtistEntity nestedArtist = (ArtistEntity) context.getStore(NESTED).get(context.getUniqueId());
-            if (nestedArtist != null) artistRepository.deleteArtist(nestedArtist);
-            if (outerArtist != null) artistRepository.deleteArtist(outerArtist);
+            if (nestedArtist != null) {
+                paintingRepository.deleteAllPaintingsByArtistId(nestedArtist.getId());
+                artistRepository.deleteArtist(nestedArtist);
+            }
+            if (outerArtist != null) {
+                paintingRepository.deleteAllPaintingsByArtistId(outerArtist.getId());
+                artistRepository.deleteArtist(outerArtist);
+            }
         }
     }
 
@@ -58,8 +68,8 @@ public class ArtistExtension implements BeforeEachCallback, AfterEachCallback, P
 
     @Override
     public ArtistEntity resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        GeneratedArtist generatedUser = parameterContext.getParameter().getAnnotation(GeneratedArtist.class);
-        return extensionContext.getStore(ExtensionContext.Namespace.create(generatedUser.artistSelector()))
+        GeneratedArtist generatedArtist = parameterContext.getParameter().getAnnotation(GeneratedArtist.class);
+        return extensionContext.getStore(ExtensionContext.Namespace.create(generatedArtist.artistSelector()))
                 .get(extensionContext.getUniqueId(), ArtistEntity.class);
     }
 
@@ -67,7 +77,7 @@ public class ArtistExtension implements BeforeEachCallback, AfterEachCallback, P
         ArtistRepository artistRepository = new ArtistRepositorySpringJdbc();
         ArtistEntity artist = new ArtistEntity();
         String name = FakerUtils.generateArtistName();
-        String biography = name + " - великий художник. Он написал множество картин";
+        String biography = name + generateRandomSentence(6);
         artist.setName(name);
         artist.setBiography(biography);
         artist.setPhoto(imageByClasspath("images/artist.jpg").getBytes(StandardCharsets.UTF_8));

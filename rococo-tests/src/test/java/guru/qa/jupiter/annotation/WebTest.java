@@ -15,6 +15,6 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@ExtendWith({DBUserExtension.class, ApiLoginExtension.class, MuseumExtension.class, ArtistExtension.class, PaintingExtension.class, BrowserExtension.class})
+@ExtendWith({MuseumExtension.class, ArtistExtension.class, PaintingExtension.class, DBUserExtension.class, ApiLoginExtension.class, BrowserExtension.class})
 public @interface WebTest {
 }

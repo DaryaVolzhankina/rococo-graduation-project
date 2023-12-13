@@ -1,32 +1,43 @@
 package guru.qa.pages;
 
 import com.codeborne.selenide.As;
+import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Step;
 import lombok.Getter;
 import org.openqa.selenium.support.FindBy;
 
+import static com.codeborne.selenide.Selenide.page;
+
 @Getter
-public class LoginPage extends BasePage<LoginPage> {
+public class LoginPage extends BaseAuthPage<LoginPage> {
 
-    public static final String URL = "/login";
-
-    @FindBy(css = "[name=username]")
-    @As("Поле Имя Пользователя")
-    private SelenideElement usernameField;
-
-    @FindBy(css = "[name=password]")
-    @As("Поле Пароль")
-    private SelenideElement passwordField;
-
-    @FindBy(css = "[type=submit]")
-    @As("Кнопка Войти")
-    private SelenideElement loginBtn;
+    public static final String URL = CFG.rococoAuthUrl() + "/login";
 
     @FindBy(css = "[href='/register']")
     @As("Кнопка Зарегистрироваться")
     private SelenideElement registerBtn;
 
-    @FindBy(css = "[class=form__error]")
-    @As("Сообщение об ошибке")
-    private SelenideElement errorNotification;
+    @Step("Открыть страницу авторизации")
+    public LoginPage open() {
+        return Selenide.open(URL, LoginPage.class);
+    }
+
+    @Step("Заполнить поля Имя пользователя и Пароль данными")
+    public LoginPage enterCredentials(String username, String password) {
+        getUsernameField().setValue(username);
+        getPasswordField().setValue(password);
+        return this;
+    }
+
+    @Step("Кликнуть на кнопку Войти")
+    public void clickLoginButton() {
+        getSubmitBtn().click();
+    }
+
+    @Step("Кликнуть на кнопку Зарегистрироваться")
+    public RegistrationPage clickRegisterButton() {
+        registerBtn.click();
+        return page(RegistrationPage.class);
+    }
 }

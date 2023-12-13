@@ -4,6 +4,8 @@ import com.github.javafaker.Faker;
 import guru.qa.db.model.museum.MuseumEntity;
 import guru.qa.db.repository.museum.MuseumRepository;
 import guru.qa.db.repository.museum.MuseumRepositorySpringJdbc;
+import guru.qa.db.repository.painting.PaintingRepository;
+import guru.qa.db.repository.painting.PaintingRepositorySpringJdbc;
 import guru.qa.jupiter.annotation.GeneratedMuseum;
 import guru.qa.jupiter.annotation.Museum;
 import guru.qa.jupiter.annotation.Painting;
@@ -19,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static guru.qa.utils.DataUtils.imageByClasspath;
+import static guru.qa.utils.FakerUtils.generateRandomSentence;
 
 public class MuseumExtension implements BeforeEachCallback, AfterEachCallback, ParameterResolver {
 
@@ -44,10 +47,17 @@ public class MuseumExtension implements BeforeEachCallback, AfterEachCallback, P
         Museum museumAnnotation = context.getRequiredTestMethod().getAnnotation(Museum.class);
         if (paintingAnnotation != null || museumAnnotation != null) {
             MuseumRepository museumRepository = new MuseumRepositorySpringJdbc();
+            PaintingRepository paintingRepository = new PaintingRepositorySpringJdbc();
             MuseumEntity outerMuseum = (MuseumEntity) context.getStore(OUTER).get(context.getUniqueId());
             MuseumEntity nestedMuseum = (MuseumEntity) context.getStore(NESTED).get(context.getUniqueId());
-            if (nestedMuseum != null) museumRepository.deleteMuseumAndCity(nestedMuseum);
-            if (outerMuseum != null) museumRepository.deleteMuseumAndCity(outerMuseum);
+            if (nestedMuseum != null) {
+                paintingRepository.deleteAllPaintingsByMuseumId(nestedMuseum.getId());
+                museumRepository.deleteMuseumAndCity(nestedMuseum);
+            }
+            if (outerMuseum != null) {
+                paintingRepository.deleteAllPaintingsByMuseumId(outerMuseum.getId());
+                museumRepository.deleteMuseumAndCity(outerMuseum);
+            }
         }
     }
 
@@ -60,8 +70,8 @@ public class MuseumExtension implements BeforeEachCallback, AfterEachCallback, P
 
     @Override
     public MuseumEntity resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        GeneratedMuseum generatedUser = parameterContext.getParameter().getAnnotation(GeneratedMuseum.class);
-        return extensionContext.getStore(ExtensionContext.Namespace.create(generatedUser.museumSelector()))
+        GeneratedMuseum generatedMuseum = parameterContext.getParameter().getAnnotation(GeneratedMuseum.class);
+        return extensionContext.getStore(ExtensionContext.Namespace.create(generatedMuseum.museumSelector()))
                 .get(extensionContext.getUniqueId(), MuseumEntity.class);
     }
 
@@ -69,7 +79,7 @@ public class MuseumExtension implements BeforeEachCallback, AfterEachCallback, P
         MuseumRepository museumRepository = new MuseumRepositorySpringJdbc();
         MuseumEntity museum = new MuseumEntity();
         String name = new Faker().company().name();
-        String description = name + " - величайший музей искусства";
+        String description = name + generateRandomSentence(6);
         museum.setTitle(name);
         museum.setDescription(description);
         museum.setPhoto(imageByClasspath("images/museum.png").getBytes(StandardCharsets.UTF_8));

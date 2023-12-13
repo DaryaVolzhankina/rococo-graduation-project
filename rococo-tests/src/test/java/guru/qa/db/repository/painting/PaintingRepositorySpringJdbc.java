@@ -26,7 +26,12 @@ public class PaintingRepositorySpringJdbc implements PaintingRepository {
     }
 
     @Override
-    public void deleteAllArtistsPaintingsById(UUID artistId) {
+    public void deleteAllPaintingsByArtistId(UUID artistId) {
         paintingDao.deleteAllArtistsPaintingsById(artistId);
+    }
+
+    @Override
+    public void deleteAllPaintingsByMuseumId(UUID museumId) {
+        paintingDao.deleteAllPaintingsByMuseumId(museumId);
     }
 }

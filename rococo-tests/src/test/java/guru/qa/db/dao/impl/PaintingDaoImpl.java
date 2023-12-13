@@ -52,4 +52,9 @@ public class PaintingDaoImpl implements PaintingDao {
     public void deleteAllArtistsPaintingsById(UUID artistId) {
         paintingJdbcTemplate.update("DELETE FROM paintings WHERE artist = ?", artistId);
     }
+
+    @Override
+    public void deleteAllPaintingsByMuseumId(UUID museumId) {
+        paintingJdbcTemplate.update("DELETE FROM paintings WHERE museum = ?", museumId);
+    }
 }

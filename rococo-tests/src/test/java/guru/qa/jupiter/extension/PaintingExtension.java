@@ -18,6 +18,7 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 import java.nio.charset.StandardCharsets;
 
 import static guru.qa.utils.DataUtils.imageByClasspath;
+import static guru.qa.utils.FakerUtils.generateRandomSentence;
 
 public class PaintingExtension implements BeforeEachCallback, AfterEachCallback, ParameterResolver {
     public static ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(PaintingExtension.class);
@@ -40,7 +41,7 @@ public class PaintingExtension implements BeforeEachCallback, AfterEachCallback,
         Painting paintingAnnotation = context.getRequiredTestMethod().getAnnotation(Painting.class);
         if (paintingAnnotation != null) {
             PaintingRepository paintingRepository = new PaintingRepositorySpringJdbc();
-            PaintingEntity painting  = context.getStore(NAMESPACE).get(context.getUniqueId(), PaintingEntity.class);
+            PaintingEntity painting = context.getStore(NAMESPACE).get(context.getUniqueId(), PaintingEntity.class);
             paintingRepository.deletePainting(painting);
         }
     }
@@ -73,7 +74,7 @@ public class PaintingExtension implements BeforeEachCallback, AfterEachCallback,
         Faker faker = new Faker();
         PaintingEntity paintingEntity = new PaintingEntity();
         paintingEntity.setTitle(faker.ancient().hero());
-        paintingEntity.setDescription("Очень интересное описание картины");
+        paintingEntity.setDescription(generateRandomSentence(6));
         paintingEntity.setContent(imageByClasspath("images/scream.jpg").getBytes(StandardCharsets.UTF_8));
         return paintingEntity;
     }
