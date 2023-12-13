@@ -55,7 +55,7 @@ spring:
     activate:
       on-profile: 'docker'
   datasource:
-    url: 'jdbc:postgresql://niffler-all-db:5432/rococo-artist'
+    url: 'jdbc:postgresql://rococo-all-db:5432/rococo-artist'
   jpa:
     hibernate:
       ddl-auto: validate

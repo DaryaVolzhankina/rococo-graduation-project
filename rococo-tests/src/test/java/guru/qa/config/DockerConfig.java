@@ -15,15 +15,15 @@ public class DockerConfig implements Config {
 
     @Override
     public String databaseHost() {
-        return "niffler-all-db";
+        return "rococo-all-db";
     }
     @Override
     public String rococoFrontUrl() {
-        return "http://frontend.niffler.dc";
+        return "http://frontend.rococo.dc";
     }
 
     @Override
     public String rococoAuthUrl() {
-        return "http://auth.niffler.dc";
+        return "http://auth.rococo.dc";
     }
 }
