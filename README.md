@@ -1,202 +1,163 @@
-!!!!!!!!!!!!!!ДИПЛОМ ПОКА НЕМНОГО НЕ ГОТОВ, ТРЕБУЕТСЯ НАВЕСТИ КРАСОТУ И НАПИСАТЬ ТЕСТЫ, НЕ БЕЙТЕ!!!!!!!!!!
-
-
-
-
-
-
 # Rococo
 
-Приветствую тебя, мой дорогой друг!
-Если ты это читаешь - то ты собираешься сделать первый шаг в написании диплома QA.GURU Advanced.
-Далее я опишу основные направления работы, но помни, что этот диплом - не шаблонная работа, а место
-для творчества - прояви себя!
+Rococo - выпускной проект для студентов 3 потока курса qa-guru java advanced. Представлен в виде сайта для хранения информации о художниках, музеях и картинах.
 
-Кстати, Rococo - стиль в искусстве (живопись и не только), а значит дело пахнет микросервисами, 
-отвечающими за художников, их картины и музеи. И тестами на все это, которые должны быть искусством
+## **Технологии, использованные в Rococo**
 
-# Что будет являться готовым дипломом?
+- [Spring Authorization Server](https://spring.io/projects/spring-authorization-server)
+- [Spring OAuth 2.0 Resource Server](https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/index.html)
+- [Spring data JPA](https://spring.io/projects/spring-data-jpa)
+- [Spring Web](https://docs.spring.io/spring-framework/docs/current/reference/html/web.html#spring-web)
+- [Spring actuator](https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html)
+- [Spring web-services](https://docs.spring.io/spring-ws/docs/current/reference/html/)
+- [Apache Kafka](https://developer.confluent.io/quickstart/kafka-docker/)
+- [Postgres](https://www.postgresql.org/about/)
+- [Thymeleaf](https://www.thymeleaf.org/)
+- [JUnit 5 (Extensions, Resolvers, etc)](https://junit.org/junit5/docs/current/user-guide/)
+- [Retrofit 2](https://square.github.io/retrofit/)
+- [Allure](https://docs.qameta.io/allure/)
+- [Selenide](https://selenide.org/)
+- [Selenoid & Selenoid-UI](https://aerokube.com/selenoid/latest/)
+- [Allure-docker-service](https://github.com/fescobar/allure-docker-service)
+- [Java 17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
+- [Gradle 8.0](https://docs.gradle.org/8.0/release-notes.html)
+- And much more:)
 
-Тут все просто, диплом глобально требует от тебя реализовать три вещи:
+# Архитектура приложения
 
-- Реализовать бэкенд на микросервисах (Spring boot, но если вдруг есть желание использовать что-то другое - мы не против)
-- Реализовать полноценное покрытие тестами микросервисов и frontend (если будут какие-то
-  unit-тесты - это большой плюс!)
-- Красиво оформить репозиторий на гихабе, что бы любой, кто зайдет на твою страничку, смог понять,
-  как все запустить, как прогнать тесты. Удели внимание этому пункту. Если я не смогу все запустить по твоему README - диплом останется без проверки
+Приложение Rococo построено на основе микросервисной архитектуры, среди звеньев которой можно выделить:
+1. **auth** - аутентификация и авторизация (*backend*).
+2. **gateway** - связывание (прокси) клиента с необходимыми микросервисами (*backend*).
+3. **userdata** - информация о пользователе (*backend*).
+4. **museum** - сведения о музеях (*backend*).
+5. **artist** - сведения об артистах (*backend*).
+6. **painting** - сведения о картинах (*backend*).
+7. **client** - интерфейс приложения, с которым взаимодействует пользователь (*frontend*).
 
-# С чего начать?
+![Архитектура приложения](img/scheme.png)
 
-Мы подготовили для тебя полностью рабочий frontend, а так же страницы регистрации и логина. Кроме
-того, у тебя есть и простой бэкенд - по сути своей, мок. В этом бекенде есть контроллеры, по которым
-можно понять, какие микросервисы тебе предстоит реализовать. И самое главное - у тебя есть проект
-niffler, который будет выступать образцом для подражания в разработке микросервисов. Тестовое
-покрытие niffler, однако, является достаточно слабым - учтите это при написании тестов на Rococ - это,
-все-таки, диплом для SDET / Senior QA Automation и падать в грязь лицом с десятком тестов на весь сервис
-точно не стоит. Итак, приступим!
+**Минимальные предусловия для работы с проектом Rococo**
 
-#### 1. Запусти фронт Rococ, для этого перейти в соответсвующий каталог
 
-```posh
-Dmitriis-MacBook-Pro rococo % cd rococo-client
-```
+#### 1. Установить docker (Если не установлен)
 
-#### 2. Обнови зависимости и запускай фронт:
-
-```posh
-Dmitriis-MacBook-Pro rococo-client % npm i
-Dmitriis-MacBook-Pro rococo-client % npm run dev
-```
-
-Фронт стартанет в твоем браузере на порту 3000: http://127.0.0.1:3000/
-Обрати внимание! Надо использовать именно 127.0.0.1, а не localhost
-
-#### 3. Запустите бэкенд rococo-api
+После установки и запуска docker daemon необходимо убедиться в работе команд docker, например `docker -v`:
 
 ```posh
-Dmitriis-MacBook-Pro rococo % ./gradlew :rococo-api:bootRun --args='--spring.profiles.active=local'
+Docker version 24.0.5, build ced0996
 ```
 
-Бэк стартанет на порту 8080: http://127.0.0.1:8080/
+#### 2. Спуллить контейнер postgres:15.1, zookeeper и kafka версии 7.3.2
 
-# Что дальше?
-
-#### 1. В первую очередь, необходимо реализовать сервис rococo-auth
-
-Фронтенд полностью готов к использованию сервиса auth на порту 9000,
-твоя задача взять сервис niffler-auth и аккуратно переделать его для работы с rococo.
-Страницы логина / регистрации, а так же стили и графику мы даем:
-
-- deer-logo.svg
-- favicon.ico
-- styles.css
-- login.html
-- register.html
-
-Основная задача - аккуратно заменить упоминания о niffler в этом сервисе, а в идеале - еще и
-разобраться, как он работает. В этом будет полезно
-видео
-[Implementing an OAuth 2 authorization server with Spring Security - the new way! by Laurentiu Spilca](https://youtu.be/DaUGKnA7aro)
-[Full Stack OAuth 2 - With Spring Security / React / Angular Part 1](https://youtu.be/SfNIjS_2H4M)
-[Full Stack OAuth 2 - With Spring Security / React / Angular Part 2](https://youtu.be/3bGer6-6mdY)
-
-#### 2. Как только у вас появилось уже 2 сервиса, есть смысл подумать о докеризации
-
-Чем раньше у ваc получится запустить в докере фронт и все бэкенды, тем проще будет дальше.
-На самом деле, докеризация не является строго обязательным требованием, но если вы хотите в будущем
-задеплоить свой сервис на прод, прикрутить CI/CD, без этого никак не обойдется
-
-#### 3. Подумать о необходимых микросервисах.
-
-У вас должен остаться основной бэкенд (rococ-api), куда будет ходить фронт, но он будет играть роль прокси,
-проверяющего вашу аутентифкацию. Все, как и в niffler. Это значит, что основная логика уйдет в свои
-микросервисы со своими БД. На мой вззгляд, здесь будут уместны сервисы rococo-artist,
-rococo-painting, rococo-museum, rococo-userdata. Возможно, у вас другие мысли, какие микросервисы создать - вы
-можете проявить свою фантазию
-
-#### 4. Выбрать протокол взаимодействия между сервисами
-
-В поставляемом фронтенде классический REST. Его можно поменять на GraphQL - но это потребует
-переписывания фронта, и тебе придется делать это самому. Поэтому я бы посоветовал оставить между
-фронтом и rococo-gateway старый добрый REST. А вот взаимодействие между микросервисами можно
-делать как угодно! REST, gRPC, SOAP. Делай проект я, однозначно взял бы gRPC - не писать руками кучу
-model-классов, получить перформанс и простое написание тестов. Стоит сказать, что здесь не
-понадобятся streaming rpc, и все ограничится простыми унарными запросами. Однако если вы хотите
-использовать REST или SOAP - мы не будем возражать.
-
-#### 5. Реализовать микросервисный backend
-
-Это место где, внезапно, СОВА НАРИСОВАНА! :)
-На самом деле, концептуально и технически каждый сервис будет похож на что-то из niffler, поэтому
-главное внимательность и аккуратность. Любые отхождения от niffler возможны - ты можешь захотеть
-использовать, например, NoSQL базы или по другому организовать конфигурацию / структуру проекта -
-никаких ограничений, лишь бы сервис выполнял свое прямое назначение
-
-##### Особенности реализации backend
-
-###### Сервис gateway
-
-1) Pageble контроллеры;
-Пример:
-```java
-  @GetMapping()
-  public Page<ArtistJson> getAll(@RequestParam(required = false) String name,
-                                 @PageableDefault Pageable pageable) {
-    return artistService.getAll(name, pageable);
-  }
+```posh
+docker pull postgres:15.1
+docker pull confluentinc/cp-zookeeper:7.3.2
+docker pull confluentinc/cp-kafka:7.3.2
 ```
-Здесь объект `Pageable` - приходит в виде GET параметров с фронта. 
-Так же GET парметром может прийти (а может и нет) параметр name. Тогда запрос в БД должен включать фильтрацию по полю name (`ContainsIgnoreCase`)
-Пример репозитория с запросом к БД с учетом Pageable и name
-```java
-public interface ArtistRepository extends JpaRepository<ArtistEntity, UUID> {
 
-  @Nonnull
-  Page<ArtistEntity> findAllByNameContainsIgnoreCase(
-          @Nonnull String name,
-          @Nonnull Pageable pageable
-  );
-}
+После `pull` вы увидите спуленный image командой `docker images`
+
+```posh
+REPOSITORY                 TAG              IMAGE ID       CREATED         SIZE
+postgres                   15.1             9f3ec01f884d   10 days ago     379MB
+confluentinc/cp-kafka      7.3.2            db97697f6e28   12 months ago   457MB
+confluentinc/cp-zookeeper  7.3.2            6fe5551964f5   7 years ago     451MB
+
 ```
-Почитать, дополнительно, тут: https://www.baeldung.com/spring-data-jpa-pagination-sorting
 
+#### 3. Создать volume для сохранения данных из БД в docker на вашем компьютере
 
-2) необходим доступ без авторизации к эндпойнту `/api/session` без необходимости быть
-аторизованным, для этого пропишем его в security config:
-```java
-@EnableWebSecurity
-@Configuration
-@Profile("!local")
-public class SecurityConfigMain {
-
-    private final CorsCustomizer corsCustomizer;
-
-    @Autowired
-    public SecurityConfigMain(CorsCustomizer corsCustomizer) {
-        this.corsCustomizer = corsCustomizer;
-    }
-
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        corsCustomizer.corsCustomizer(http);
-
-        http.authorizeHttpRequests(customizer ->
-                customizer.requestMatchers(
-                                antMatcher(HttpMethod.GET, "/api/session"),
-                                antMatcher(HttpMethod.GET, "/api/artist/**"),
-                                antMatcher(HttpMethod.GET, "/api/museum/**"),
-                                antMatcher(HttpMethod.GET, "/api/painting/**"))
-                        .permitAll()
-                        .anyRequest()
-                        .authenticated()
-        ).oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()));
-        return http.build();
-    }
-}
+```posh
+docker volume create rococo
 ```
-Все прочие эндпойнты должны требовать авторизацию
 
-#### 6. Подготовить структуру тестового "фреймворка", подумать о том какие прекондишены и как вы будете создавать
+#### 4. Запустить БД, zookeeper и kafka 4-мя последовательными командами:
 
-Здесь однозначно понадобится возможность API-логина и работы со всеми возможными preconditions проекта - картинами,
-художниками, музеями. 
+Для *nix:
+```posh
+docker run --name rococo-all -p 5432:5432 -e POSTGRES_PASSWORD=secret -v rococo:/var/lib/postgresql/data -d postgres:15.1
 
-#### 7. Реализовать достаточное, на твой взгляд, покрытие e-2-e тестами
+docker run --name=zookeeper -e ZOOKEEPER_CLIENT_PORT=2181 -e ZOOKEEPER_TICK_TIME=2000 -p 2181:2181 -d confluentinc/cp-zookeeper:7.3.2
 
-На наш взгляд, только основны позитивных сценариев тут не менее трех десятков.
+docker run --name=kafka -e KAFKA_BROKER_ID=1 \
+-e KAFKA_ZOOKEEPER_CONNECT=$(docker inspect zookeeper --format='{{ .NetworkSettings.IPAddress }}'):2181 \
+-e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 \
+-e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 \
+-e KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1 \
+-e KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1 \
+-p 9092:9092 -d confluentinc/cp-kafka:7.3.2
+```
+Для Windows:
+```posh
+docker run --name rococo-all -p 5432:5432 -e POSTGRES_PASSWORD=secret -v rococo:/var/lib/postgresql/data -d postgres:15.1
 
-#### 8. Оформить все красиво!
+docker run --name=zookeeper -e ZOOKEEPER_CLIENT_PORT=2181 -e ZOOKEEPER_TICK_TIME=2000 -p 2181:2181 -d confluentinc/cp-zookeeper:7.3.2
 
-Да, тут еще раз намекну про важность ридми, важность нарисовать топологию (схему) твоих сервисов, важность скриншотиков и прочих красот
+docker run --name=kafka -e KAFKA_BROKER_ID=1 -e KAFKA_ZOOKEEPER_CONNECT=$(docker inspect zookeeper --format='{{ .NetworkSettings.IPAddress }}'):2181 -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 -e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 -e KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1 -e KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1 -p 9092:9092 -d confluentinc/cp-kafka:7.3.2
+```
 
+https://github.com/confluentinc/cp-docker-images/issues/801#issuecomment-692085103
 
+#### 5. Установить одну из программ для визуальной работы с Postgres
 
+Например, DBeaver, Datagrip или PgAdmin 4.
 
+#### 6. Подключиться к БД postgres (host: localhost, port: 5432, user: postgres, pass: secret, database name: postgres) из PgAdmin и создать пустые БД микросервисов
 
+```sql
+create
+    database "rococo-userdata" with owner postgres;
+create
+    database "rococo-artist" with owner postgres;
+create
+    database "rococo-museum" with owner postgres;
+create
+    database "rococo-painting" with owner postgres;
+create
+    database "rococo-auth" with owner postgres;
+```
 
+#### 7. Установить Java версии 17 или новее. Это необходимо, т.к. проект не поддерживает версии <17
 
+Версию установленной Java необходимо проверить командой `java -version`
 
+```posh
+java version "17.0.8" 2023-07-18 LTS
+Java(TM) SE Runtime Environment (build 17.0.8+9-LTS-211)
+Java HotSpot(TM) 64-Bit Server VM (build 17.0.8+9-LTS-211, mixed mode, sharing)
+```
 
+Если у вас несколько версий Java одновременно - то хотя бы одна из них должна быть 17+
+Если java не установлена вовсе, то рекомендую установить OpenJDK (например, из https://adoptium.net/en-GB/)
 
+#### 8. Установить пакетый менеджер для сборки front-end npm
 
+[Инструкция](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
+Рекомендованная версия Node.js - 18.13.0 (LTS)
 
+# Запуск Rococo локально в IDE:
+
+#### 1. Перейти в папку rococo-client
+
+```posh
+cd rococo-client
+```
+
+#### 2. Запустить фронтенд (сначала обновить зависимости)
+
+```posh
+npm i
+npm run dev
+```
+
+#### 3. Прописать run конфигурацию для всех сервисов rococo-* - Active profiles local
+
+Для этого зайти в меню Run -> Edit Configurations -> выбрать main класс -> указать Active profiles: local
+[Инструкция](https://stackoverflow.com/questions/39738901/how-do-i-activate-a-spring-boot-profile-when-running-from-intellij).
+
+#### 4 Запустить сервис rococo-auth командой Run в IDE:
+
+Или просто перейдя к main-классу приложения RococoAuthApplication выбрать run в IDEA (предварительно удостовериться что
+выполнен предыдущий пункт)
+
+#### 5  Запустить в любой последовательности другие сервисы: rococo-artist, rococo-museum, rococo-painting, rococo-gateway, rococo-userdata

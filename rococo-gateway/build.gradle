@@ -37,20 +37,6 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-//docker {
-//    dependsOn build
-//    name "dtuchs/rococo-gateway:${project.version}"
-//    tag 'latest', 'dtuchs/rococo-gateway:latest'
-//    files bootJar.archiveFile
-//    buildArgs([APP_VER: project.version, DOCKER: project.ext.dockerImage])
-//    noCache true
-//}
-//
-//tasks.register('dockerRmi', Exec) {
-//    workingDir "${buildDir}"
-//    commandLine 'bash', '-c', "docker rmi -f \$(docker images | grep 'niffler')\n"
-//}
-
 tasks.named('bootJar') {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }

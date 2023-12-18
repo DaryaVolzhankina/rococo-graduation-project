@@ -25,27 +25,6 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-//jib {
-//    container {
-//        ports = ['9000']
-//        jvmFlags = ["-Dspring.profiles.active=${System.env.PROFILE}"]
-//        creationTime = 'USE_CURRENT_TIMESTAMP'
-//    }
-//    from {
-//        image = "${project.ext.dockerImage}"
-//        platforms {
-//            platform {
-//                architecture = "${project.ext.dockerArch}"
-//                os = 'linux'
-//            }
-//        }
-//    }
-//    to {
-//        image = "${project.ext.registry}/${project.name}"
-//        tags = ['latest', "${project.version}"]
-//    }
-//}
-
 tasks.named('test') {
     useJUnitPlatform()
 }

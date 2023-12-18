@@ -107,7 +107,7 @@ public class PaintingService {
     }
 
     public @Nonnull
-    Page<PaintingJson> getAllPaintingsByArtist(@Nonnull UUID artistId,@Nonnull Pageable pageable) {
+    Page<PaintingJson> getAllPaintingsByArtist(@Nonnull UUID artistId, @Nonnull Pageable pageable) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 
         params.add("size", String.valueOf(pageable.getPageSize()));
@@ -132,16 +132,37 @@ public class PaintingService {
     }
 
     public @Nonnull
-    PaintingJson editPainting(@Nonnull PaintingJson museum) {
-        museum.setMuseumId(museum.getMuseum().getId());
-        museum.setArtistId(museum.getArtist().getId());
+    PaintingJson editPainting(@Nonnull PaintingJson paintingJson) {
+        UUID museumId = paintingJson.getMuseum().getId();
+        UUID artistId = paintingJson.getArtist().getId();
+        paintingJson.setMuseumId(museumId);
+        paintingJson.setArtistId(artistId);
 
-        return webClient.patch()
+
+        PaintingJson newPainting = webClient.patch()
                 .uri(rococoPaintingBaseUri + "/api/painting")
-                .body(Mono.just(museum), PaintingJson.class)
+                .body(Mono.just(paintingJson), PaintingJson.class)
                 .retrieve()
                 .bodyToMono(PaintingJson.class)
                 .block();
+
+        ArtistJson artistJson = webClient.get()
+                .uri(UriComponentsBuilder.fromHttpUrl(rococoArtistBaseUri + "/api/artist").path("/{id}").build(artistId))
+                .retrieve()
+                .bodyToMono(ArtistJson.class)
+                .block();
+        newPainting.setArtist(artistJson);
+
+        if (museumId != null) {
+            MuseumJson museumJson = webClient.get()
+                    .uri(UriComponentsBuilder.fromHttpUrl(rococoMuseumBaseUri + "/api/museum").path("/{id}").build(museumId))
+                    .retrieve()
+                    .bodyToMono(MuseumJson.class)
+                    .block();
+            newPainting.setMuseum(museumJson);
+        }
+
+        return newPainting;
     }
 
     ArtistJson getArtistById(@Nonnull UUID id) {

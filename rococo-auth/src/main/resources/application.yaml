@@ -69,7 +69,7 @@ spring:
   kafka:
     bootstrap-servers: 'kafka:9092'
   datasource:
-    url: 'jdbc:postgresql://niffler-all-db:5432/rococo-auth'
+    url: 'jdbc:postgresql://rococo-all-db:5432/rococo-auth'
   jpa:
     hibernate:
       ddl-auto: validate

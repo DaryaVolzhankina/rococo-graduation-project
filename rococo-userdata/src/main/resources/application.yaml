@@ -65,7 +65,7 @@ spring:
       group-id: 'userdata'
       auto-offset-reset: earliest
   datasource:
-    url: 'jdbc:postgresql://niffler-all-db:5432/rococo-userdata'
+    url: 'jdbc:postgresql://rococo-all-db:5432/rococo-userdata'
   jpa:
     hibernate:
       ddl-auto: validate

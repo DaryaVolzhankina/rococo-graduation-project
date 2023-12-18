@@ -1,7 +1,5 @@
 package guru.qa.rococo.service;
 
-import guru.qa.rococo.data.Authority;
-import guru.qa.rococo.data.AuthorityEntity;
 import guru.qa.rococo.data.UserEntity;
 import guru.qa.rococo.data.repository.UserRepository;
 import jakarta.annotation.Nonnull;
@@ -31,14 +29,6 @@ public class UserService {
         userEntity.setUsername(username);
         userEntity.setPassword(passwordEncoder.encode(password));
 
-        AuthorityEntity readAuthorityEntity = new AuthorityEntity();
-        readAuthorityEntity.setAuthority(Authority.read);
-        readAuthorityEntity.setUser(userEntity);
-        AuthorityEntity writeAuthorityEntity = new AuthorityEntity();
-        writeAuthorityEntity.setAuthority(Authority.write);
-        writeAuthorityEntity.setUser(userEntity);
-
-        userEntity.addAuthorities(readAuthorityEntity, writeAuthorityEntity);
         return userRepository.save(userEntity).getUsername();
     }
 }
