@@ -72,14 +72,21 @@ public class PaintingsPage extends BaseFrontPage<PaintingsPage> {
         return this;
     }
 
-    @Step("Проверка списка картин")
+    @Step("Проверка списка картин на наличие картины с названием {0}")
     public PaintingsPage checkPaintingsNamesList(String paintingName) {
         paintingsTitlesList.shouldHave(CollectionCondition.sizeGreaterThanOrEqual(1));
         paintingsTitlesList.forEach(artist -> artist.shouldHave(Condition.partialText(paintingName)));
         return this;
     }
 
-    @Step("Открыть картину")
+    @Step("Проверка наличия списка картин")
+    public PaintingsPage checkPaintingsNamesList() {
+        paintingsTitlesList.shouldHave(CollectionCondition.sizeGreaterThanOrEqual(1));
+        paintingsTitlesList.get(0).shouldBe(visible);
+        return this;
+    }
+
+    @Step("Открыть страницу картины")
     public PaintingPage getPainting() {
         paintingsList.shouldHave(CollectionCondition.size(1));
         paintingsList.get(0).click();
@@ -90,20 +97,5 @@ public class PaintingsPage extends BaseFrontPage<PaintingsPage> {
     public NewPaintingPopup clickAddPaintingBtn() {
         addPaintingBtn.click();
         return page(NewPaintingPopup.class);
-    }
-
-    @Step("Проверить текст сообщения")
-    public PaintingsPage checkNotificationMessage(String text) {
-        paintingAddedNotification
-                .shouldBe(visible)
-                .shouldHave(text(text));
-        return this;
-    }
-
-    @Step("Проверить, что на странице нет никакого информационного сообщения")
-    public PaintingsPage notificationMessageShouldNotBeVisible() {
-        paintingAddedNotification
-                .shouldNotBe(visible);
-        return this;
     }
 }

@@ -63,25 +63,10 @@ public class ArtistPage extends BaseFrontPage<ArtistPage> {
         return page(EditArtistPopup.class);
     }
 
-    @Step("Проверить, что ссылка имеет внутри себя id артиста")
+    @Step("Проверить, что ссылка содержит id артиста")
     public ArtistPage checkUrl(String artistId) {
         assertThat(webdriver().driver().url())
                 .isEqualTo(CFG.rococoFrontUrl() + "/artist/" + artistId);
-        return this;
-    }
-
-    @Step("Проверить текст сообщения")
-    public ArtistPage checkNotificationMessage(String text) {
-        notification
-                .shouldBe(visible)
-                .shouldHave(text(text));
-        return this;
-    }
-
-    @Step("Проверить, что на странице нет никакого информационного сообщения")
-    public ArtistPage notificationMessageShouldNotBeVisible() {
-        notification
-                .shouldNotBe(visible);
         return this;
     }
 
@@ -91,7 +76,7 @@ public class ArtistPage extends BaseFrontPage<ArtistPage> {
         return page(NewPaintingPopup.class);
     }
 
-    @Step("Проверить картину художника")
+    @Step("Проверить наличие картины в списке картин")
     public ArtistPage checkPainting(String paintingTitle) {
         paintingsTitlesList.shouldHave(CollectionCondition.size(1));
         paintingsTitlesList.first()

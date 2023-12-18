@@ -24,7 +24,7 @@ public class AuthServiceClient extends RestService {
 
     private final AuthService authService = retrofit.create(AuthService.class);
 
-    @Step("Do api login")
+    @Step("Авторизоваться пользователем {0}")
     public void doLogin(String username, String password) throws IOException {
         LocalStorageContext localStorageContext = LocalStorageContext.getInstance();
         CookieContext cookieContext = CookieContext.getInstance();

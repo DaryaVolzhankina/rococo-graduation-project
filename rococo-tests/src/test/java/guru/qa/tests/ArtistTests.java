@@ -7,6 +7,7 @@ import guru.qa.jupiter.annotation.DBUser;
 import guru.qa.jupiter.annotation.GeneratedArtist;
 import guru.qa.pages.ArtistPage;
 import guru.qa.pages.ArtistsPage;
+import guru.qa.pages.MainPage;
 import io.qameta.allure.Epic;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,17 @@ public class ArtistTests extends BaseWebTest {
     public static final String biography = name  + generateRandomSentence(6);
     public static final String imgPath = "images/artist.jpg";
     public static final String artistAddedNotificationMessage = "Добавлен художник: " + name;
+
+    @Artist
+    @Test
+    @DisplayName("Переход с главной страницы на страницу Художники")
+    void checkArtistsPageTest(@GeneratedArtist(artistSelector = GeneratedArtist.ArtistSelector.OUTER) ArtistEntity artist) {
+        page(MainPage.class)
+                .open()
+                .clickArtistsBtn()
+                .checkPageIsOpened()
+                .checkArtistsNamesList();
+    }
 
     @Artist
     @Test
@@ -44,7 +56,7 @@ public class ArtistTests extends BaseWebTest {
                 .clickAddArtistsBtn()
                 .enterValues(name, imgPath, biography)
                 .clickAddArtistBtn()
-                .checkNotificationMessage(artistAddedNotificationMessage)
+                .checkNotificationMessage(artistAddedNotificationMessage, ArtistsPage.class)
                 .searchArtist(name)
                 .getArtist()
                 .checkArtist(name, biography);
@@ -65,7 +77,7 @@ public class ArtistTests extends BaseWebTest {
                 .clickEditBtn()
                 .enterValues(name, imgPath, biography)
                 .clickSaveBtn()
-                .checkNotificationMessage(artistEditedNotificationMessage)
+                .checkNotificationMessage(artistEditedNotificationMessage, ArtistPage.class)
                 .checkArtist(name, biography)
                 .checkUrl(String.valueOf(artist.getId()));
     }
@@ -80,7 +92,7 @@ public class ArtistTests extends BaseWebTest {
                 .clickAddArtistsBtn()
                 .enterValues(name, imgPath, biography)
                 .clickCloseBtn()
-                .notificationMessageShouldNotBeVisible();
+                .notificationMessageShouldNotBeVisible(ArtistPage.class);
     }
 
     @Artist
@@ -94,6 +106,6 @@ public class ArtistTests extends BaseWebTest {
                 .clickEditBtn()
                 .enterValues(name, imgPath, biography)
                 .clickCloseBtn()
-                .notificationMessageShouldNotBeVisible();
+                .notificationMessageShouldNotBeVisible(ArtistPage.class);
     }
 }

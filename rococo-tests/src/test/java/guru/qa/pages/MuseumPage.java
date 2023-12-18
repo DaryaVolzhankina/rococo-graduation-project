@@ -9,8 +9,6 @@ import io.qameta.allure.Step;
 import lombok.Getter;
 import org.openqa.selenium.support.FindBy;
 
-import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.page;
 import static com.codeborne.selenide.Selenide.webdriver;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,7 +41,7 @@ public class MuseumPage extends BaseFrontPage<MuseumPage> {
         return Selenide.open(CFG.rococoFrontUrl() + "/museum/" + museumId, MuseumPage.class);
     }
 
-    @Step("Проверить заголовок и описание музея")
+    @Step("Проверить заголовок, описание и локацию музея")
     public MuseumPage checkMuseum(String title, String description, String city, String country) {
         museumTitle.shouldHave(Condition.text(title));
         this.description.shouldHave(Condition.text(description));
@@ -57,25 +55,10 @@ public class MuseumPage extends BaseFrontPage<MuseumPage> {
         return page(EditMuseumPopup.class);
     }
 
-    @Step("Проверить, что ссылка имеет внутри себя id музея")
+    @Step("Проверить, что ссылка содержит id музея")
     public MuseumPage checkUrl(String museumId) {
         assertThat(webdriver().driver().url())
                 .isEqualTo(CFG.rococoFrontUrl() + "/museum/" + museumId);
-        return this;
-    }
-
-    @Step("Проверить текст сообщения")
-    public MuseumPage checkNotificationMessage(String text) {
-        museumEditedNotification
-                .shouldBe(visible)
-                .shouldHave(text(text));
-        return this;
-    }
-
-    @Step("Проверить, что на странице нет никакого информационного сообщения")
-    public MuseumPage notificationMessageShouldNotBeVisible() {
-        museumEditedNotification
-                .shouldNotBe(visible);
         return this;
     }
 }

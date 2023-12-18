@@ -9,6 +9,7 @@ import org.openqa.selenium.support.FindBy;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Selenide.page;
 import static com.codeborne.selenide.Selenide.webdriver;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -47,4 +48,21 @@ public class MainPage extends BaseFrontPage<MainPage> {
         return this;
     }
 
+    @Step("Кликнуть на кнопку Художники")
+    public ArtistsPage clickArtistsBtn() {
+        artistsButton.click();
+        return page(ArtistsPage.class);
+    }
+
+    @Step("Кликнуть на кнопку Музеи")
+    public MuseumsPage clickMuseumsBtn() {
+        museumsButton.click();
+        return page(MuseumsPage.class);
+    }
+
+    @Step("Кликнуть на кнопку Картины")
+    public PaintingsPage clickPaintingsBtn() {
+        paintingsButton.click();
+        return page(PaintingsPage.class);
+    }
 }

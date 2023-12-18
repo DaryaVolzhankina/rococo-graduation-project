@@ -72,14 +72,21 @@ public class MuseumsPage extends BaseFrontPage<MuseumsPage> {
         return this;
     }
 
-    @Step("Проверка списка музеев")
+    @Step("Проверка списка музеев на наличие музея с названием {0}")
     public MuseumsPage checkMuseumsNamesList(String museumName) {
         museumsTitlesList.shouldHave(CollectionCondition.sizeGreaterThanOrEqual(1));
         museumsTitlesList.forEach(artist -> artist.shouldHave(Condition.partialText(museumName)));
         return this;
     }
 
-    @Step("Проверка музея")
+    @Step("Проверка наличия списка музеев")
+    public MuseumsPage checkMuseumsNamesList() {
+        museumsTitlesList.shouldHave(CollectionCondition.sizeGreaterThanOrEqual(1));
+        museumsTitlesList.get(0).shouldBe(visible);
+        return this;
+    }
+
+    @Step("Открыть страницу музея")
     public MuseumPage getMuseum() {
         museumsList.shouldHave(CollectionCondition.size(1));
         museumsList.get(0).click();
@@ -90,20 +97,5 @@ public class MuseumsPage extends BaseFrontPage<MuseumsPage> {
     public NewMuseumPopup clickAddMuseumBtn() {
         addMuseumBtn.click();
         return page(NewMuseumPopup.class);
-    }
-
-    @Step("Проверить текст сообщения")
-    public MuseumsPage checkNotificationMessage(String text) {
-        museumAddedNotification
-                .shouldBe(visible)
-                .shouldHave(text(text));
-        return this;
-    }
-
-    @Step("Проверить, что на странице нет никакого информационного сообщения")
-    public MuseumsPage notificationMessageShouldNotBeVisible() {
-        museumAddedNotification
-                .shouldNotBe(visible);
-        return this;
     }
 }

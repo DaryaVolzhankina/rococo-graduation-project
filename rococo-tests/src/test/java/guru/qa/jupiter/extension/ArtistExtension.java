@@ -76,7 +76,7 @@ public class ArtistExtension implements BeforeEachCallback, AfterEachCallback, P
     private ArtistEntity createArtistForTest() {
         ArtistRepository artistRepository = new ArtistRepositorySpringJdbc();
         ArtistEntity artist = new ArtistEntity();
-        String name = FakerUtils.generateArtistName();
+        String name = FakerUtils.generateRandomUsername();
         String biography = name + generateRandomSentence(6);
         artist.setName(name);
         artist.setBiography(biography);

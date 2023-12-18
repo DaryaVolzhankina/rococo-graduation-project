@@ -40,4 +40,13 @@ public class LoginTests extends BaseWebTest {
                 .clickLoginButton();
         page(LoginPage.class).checkErrorNotificationMessage(BAD_CREDENTIALS_MESSAGE, LoginPage.class);
     }
+
+    @Test
+    @DisplayName("Авторизация с незаполненными полями логин,пароль")
+    void loginWithEmptyCredentialsTest() {
+        page(LoginPage.class).open()
+                .clickLoginButton();
+        page(LoginPage.class)
+                .checkPageIsOpened();
+    }
 }

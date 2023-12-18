@@ -6,6 +6,7 @@ import guru.qa.jupiter.annotation.ApiLogin;
 import guru.qa.jupiter.annotation.DBUser;
 import guru.qa.jupiter.annotation.GeneratedMuseum;
 import guru.qa.jupiter.annotation.Museum;
+import guru.qa.pages.MainPage;
 import guru.qa.pages.MuseumPage;
 import guru.qa.pages.MuseumsPage;
 import io.qameta.allure.Epic;
@@ -23,6 +24,17 @@ public class MuseumTests extends BaseWebTest {
     public static final String description = name + generateRandomSentence(6);
     public static final String imgPath = "images/museum.png";
     public static final String museumAddedNotificationMessage = "Добавлен музей: " + name;
+
+    @Museum
+    @Test
+    @DisplayName("Переход с главной страницы на страницу Музеи")
+    void checkMuseumsPageTest(@GeneratedMuseum(museumSelector = GeneratedMuseum.MuseumSelector.OUTER) MuseumEntity museum) {
+        page(MainPage.class)
+                .open()
+                .clickMuseumsBtn()
+                .checkPageIsOpened()
+                .checkMuseumsNamesList();
+    }
 
     @Museum
     @Test
@@ -44,7 +56,7 @@ public class MuseumTests extends BaseWebTest {
                 .clickAddMuseumBtn()
                 .enterValues(name, "Russia", "Moscow", imgPath, description)
                 .clickAddBtn()
-                .checkNotificationMessage(museumAddedNotificationMessage)
+                .checkNotificationMessage(museumAddedNotificationMessage, MuseumsPage.class)
                 .searchMuseum(name)
                 .getMuseum()
                 .checkMuseum(name, description, "Moscow", "Russia");
@@ -65,7 +77,7 @@ public class MuseumTests extends BaseWebTest {
                 .clickEditBtn()
                 .enterValues(name, "Russia", "Moscow", imgPath, description)
                 .clickSaveBtn()
-                .checkNotificationMessage(museumEditedNotificationMessage)
+                .checkNotificationMessage(museumEditedNotificationMessage, MuseumPage.class)
                 .checkMuseum(name, description, "Moscow", "Russia")
                 .checkUrl(String.valueOf(museum.getId()));
     }
@@ -80,7 +92,7 @@ public class MuseumTests extends BaseWebTest {
                 .clickAddMuseumBtn()
                 .enterValues(name, "Russia", "Moscow", imgPath, description)
                 .clickCloseBtn()
-                .notificationMessageShouldNotBeVisible();
+                .notificationMessageShouldNotBeVisible(MuseumsPage.class);
     }
 
     @Museum
@@ -94,6 +106,6 @@ public class MuseumTests extends BaseWebTest {
                 .clickEditBtn()
                 .enterValues(name, "Russia", "Moscow", imgPath, description)
                 .clickCloseBtn()
-                .notificationMessageShouldNotBeVisible();
+                .notificationMessageShouldNotBeVisible(MuseumPage.class);
     }
 }

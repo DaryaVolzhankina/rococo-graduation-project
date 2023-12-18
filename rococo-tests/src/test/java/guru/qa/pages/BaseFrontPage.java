@@ -81,18 +81,18 @@ public abstract class BaseFrontPage<T extends BaseFrontPage<T>> {
     }
 
     @Step("Проверить текст сообщения")
-    public BaseFrontPage<T> checkNotificationMessage(String text) {
+    public <T extends BaseFrontPage<T>> T checkNotificationMessage(String text, Class<T> page) {
         notification
                 .shouldBe(visible)
                 .shouldHave(text(text));
-        return this;
+        return page(page);
     }
 
-    @Step("Проверить, что на странице нет никакого информационного сообщения")
-    public BaseFrontPage<T> notificationMessageShouldNotBeVisible() {
+    @Step("Проверить, что на странице нет информационного сообщения")
+    public <T extends BaseFrontPage<T>> T notificationMessageShouldNotBeVisible(Class<T> page) {
         notification
                 .shouldNotBe(visible);
-        return this;
+        return page(page);
     }
 
     @Step("Кликнуть на переключатель тем")

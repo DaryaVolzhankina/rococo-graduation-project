@@ -71,14 +71,21 @@ public class ArtistsPage extends BaseFrontPage<ArtistsPage> {
         return this;
     }
 
-    @Step("Проверка списка художников")
+    @Step("Проверка списка художников на наличие художника с именем {0}")
     public ArtistsPage checkArtistsNamesList(String artistName) {
         artistsNamesList.shouldHave(CollectionCondition.sizeGreaterThanOrEqual(1));
         artistsNamesList.forEach(artist -> artist.shouldHave(Condition.partialText(artistName)));
         return this;
     }
 
-    @Step("Проверка художникa")
+    @Step("Проверка наличия списка художников")
+    public ArtistsPage checkArtistsNamesList() {
+        artistsNamesList.shouldHave(CollectionCondition.sizeGreaterThanOrEqual(1));
+        artistsNamesList.get(0).shouldBe(visible);
+        return this;
+    }
+
+    @Step("Открыть страницу художникa")
     public ArtistPage getArtist() {
         artistsList.shouldHave(CollectionCondition.size(1));
         artistsList.get(0).click();
@@ -89,20 +96,5 @@ public class ArtistsPage extends BaseFrontPage<ArtistsPage> {
     public NewArtistPopup clickAddArtistsBtn() {
         addArtistBtn.click();
         return page(NewArtistPopup.class);
-    }
-
-    @Step("Проверить текст сообщения")
-    public ArtistsPage checkNotificationMessage(String text) {
-        artistAddedNotification
-                .shouldBe(visible)
-                .shouldHave(text(text));
-        return this;
-    }
-
-    @Step("Проверить, что на странице нет никакого информационного сообщения")
-    public ArtistsPage notificationMessageShouldNotBeVisible() {
-        artistAddedNotification
-                .shouldNotBe(visible);
-        return this;
     }
 }

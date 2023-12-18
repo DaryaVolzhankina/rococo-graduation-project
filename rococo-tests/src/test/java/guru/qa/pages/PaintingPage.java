@@ -46,12 +46,12 @@ public class PaintingPage extends BaseFrontPage<PaintingPage> {
         return Selenide.open(CFG.rococoFrontUrl() + "/painting/" + paintingId, PaintingPage.class);
     }
 
-    @Step("Проверить заголовок и описание картины")
+    @Step("Проверить заголовок, описание картины, имя художника и изображение картины")
     public PaintingPage checkPainting(String title, String description, String artistName) {
         paintingTitle.shouldHave(Condition.text(title));
         this.description.shouldHave(Condition.text(description));
         artist.shouldHave(text(artistName));
-        painting.shouldHave(Condition.attribute("src"));
+        painting.shouldBe(visible).shouldHave(Condition.attribute("src"));
         return this;
     }
 
@@ -61,25 +61,10 @@ public class PaintingPage extends BaseFrontPage<PaintingPage> {
         return page(EditPaintingPopup.class);
     }
 
-    @Step("Проверить, что ссылка имеет внутри себя id картины")
+    @Step("Проверить, что ссылка содержит id картины")
     public PaintingPage checkUrl(String museumId) {
         assertThat(webdriver().driver().url())
                 .isEqualTo(CFG.rococoFrontUrl() + "/painting/" + museumId);
-        return this;
-    }
-
-    @Step("Проверить текст сообщения")
-    public PaintingPage checkNotificationMessage(String text) {
-        paintingEditedNotification
-                .shouldBe(visible)
-                .shouldHave(text(text));
-        return this;
-    }
-
-    @Step("Проверить, что на странице нет никакого информационного сообщения")
-    public PaintingPage notificationMessageShouldNotBeVisible() {
-        paintingEditedNotification
-                .shouldNotBe(visible);
         return this;
     }
 }

@@ -30,7 +30,7 @@ public class ProfileTests extends BaseWebTest {
                 .enterValues(name, surname, imgPath)
                 .clickUpdateBtn();
         page(MainPage.class)
-                .checkNotificationMessage("Профиль обновлен");
+                .checkNotificationMessage("Профиль обновлен", MainPage.class);
     }
 
 
@@ -47,6 +47,6 @@ public class ProfileTests extends BaseWebTest {
                 .enterValues(name, surname, imgPath)
                 .clickCloseBtn();
         page(MainPage.class)
-                .notificationMessageShouldNotBeVisible();
+                .notificationMessageShouldNotBeVisible(MainPage.class);
     }
 }

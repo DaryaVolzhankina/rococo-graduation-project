@@ -12,6 +12,7 @@ import guru.qa.jupiter.annotation.GeneratedMuseum;
 import guru.qa.jupiter.annotation.Museum;
 import guru.qa.jupiter.annotation.Painting;
 import guru.qa.pages.ArtistPage;
+import guru.qa.pages.MainPage;
 import guru.qa.pages.PaintingPage;
 import guru.qa.pages.PaintingsPage;
 import io.qameta.allure.Epic;
@@ -29,6 +30,17 @@ public class PaintingTests extends BaseWebTest {
     public static final String description = title + generateRandomSentence(6);
     public static final String imgPath = "images/scream.jpg";
     public static final String paintingAddedNotificationMessage = "Добавлена картина: " + title;
+
+    @Painting
+    @Test
+    @DisplayName("Переход с главной страницы на страницу Картины")
+    void checkPaintingsPageTest(@Painting PaintingEntity painting) {
+        page(MainPage.class)
+                .open()
+                .clickPaintingsBtn()
+                .checkPageIsOpened()
+                .checkPaintingsNamesList();
+    }
 
     @Painting
     @Test
@@ -54,7 +66,7 @@ public class PaintingTests extends BaseWebTest {
                 .enterValues(title, imgPath, artist.getName(), description, museum.getTitle())
                 .clickAddBtn();
         page(PaintingsPage.class)
-                .checkNotificationMessage(paintingAddedNotificationMessage)
+                .checkNotificationMessage(paintingAddedNotificationMessage, PaintingsPage.class)
                 .searchPainting(title)
                 .getPainting()
                 .checkPainting(title, description, artist.getName());
@@ -74,7 +86,7 @@ public class PaintingTests extends BaseWebTest {
                 .enterValues(title, imgPath, description, museum.getTitle())
                 .clickAddBtn();
         page(ArtistPage.class)
-                .checkNotificationMessage(paintingAddedNotificationMessage)
+                .checkNotificationMessage(paintingAddedNotificationMessage, ArtistPage.class)
                 .checkPainting(title);
     }
 
@@ -97,7 +109,7 @@ public class PaintingTests extends BaseWebTest {
                 .clickEditBtn()
                 .enterValues(title, imgPath, artist.getName(), description, museum.getTitle())
                 .clickSaveBtn()
-                .checkNotificationMessage(paintingEditedNotificationMessage)
+                .checkNotificationMessage(paintingEditedNotificationMessage, PaintingPage.class)
                 .checkPainting(title, description, artist.getName())
                 .checkUrl(String.valueOf(paintingEntity.getId()));
     }
@@ -115,7 +127,7 @@ public class PaintingTests extends BaseWebTest {
                 .clickAddPaintingBtn()
                 .enterValues(title, imgPath, artist.getName(), description, museum.getTitle())
                 .clickCloseBtn()
-                .notificationMessageShouldNotBeVisible();
+                .notificationMessageShouldNotBeVisible(PaintingsPage.class);
     }
 
     @Museum
@@ -134,7 +146,7 @@ public class PaintingTests extends BaseWebTest {
                 .clickEditBtn()
                 .enterValues(title, imgPath, outerArtist.getName(), description, outerMuseum.getTitle())
                 .clickCloseBtn()
-                .notificationMessageShouldNotBeVisible()
+                .notificationMessageShouldNotBeVisible(PaintingPage.class)
                 .checkPainting(paintingEntity.getTitle(), paintingEntity.getDescription(), nestedArtist.getName());
     }
 }

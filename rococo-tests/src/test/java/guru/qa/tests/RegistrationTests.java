@@ -16,6 +16,7 @@ import static guru.qa.utils.FakerUtils.generateRandomUsername;
 @DisplayName("Регистрация")
 public class RegistrationTests extends BaseWebTest {
     private static final String DEFAULT_PASSWORD = "12345";
+    private static final String LONG_PASSWORD = "1234512345123";
 
     @Test
     @DisplayName("Регистрация несуществующего в бд пользователя")
@@ -27,13 +28,45 @@ public class RegistrationTests extends BaseWebTest {
                 .clickRegisterButton()
                 .enterCredentials(username, DEFAULT_PASSWORD)
                 .clickRegisterBtn()
-                .clickLoginBtn()
+                .clickEnterSystemBtn()
                 .enterCredentials(username, DEFAULT_PASSWORD)
                 .clickLoginButton();
 
         page(MainPage.class)
                 .loginButtonShouldNotBeVisible()
                 .profileIconShouldBeVisible();
+    }
+
+    @Test
+    @DisplayName("Регистрация с пустым полем Повторите пароль")
+    void registrationWithEmptyPasswordSubmitField() {
+        page(RegistrationPage.class)
+                .open()
+                .enterCredentialsWithoutPasswordSubmitField(generateRandomUsername(), DEFAULT_PASSWORD)
+                .clickRegisterBtn()
+                .checkPageIsOpened();
+    }
+
+    @Test
+    @DisplayName("Регистрация с несовпадающими полями Пароль и Повторите пароль")
+    void registrationWithDifferentPasswordFieldPasswordSubmitField() {
+        page(RegistrationPage.class)
+                .open()
+                .enterRandomCredentials()
+                .clickRegisterBtn()
+                .checkPageIsOpened()
+                .checkErrorNotificationMessage("Passwords should be equal", RegistrationPage.class);
+    }
+
+    @Test
+    @DisplayName("Регистрация с паролем больше 12 символов")
+    void registrationWithPasswordLonger12Char() {
+        page(RegistrationPage.class)
+                .open()
+                .enterCredentials(generateRandomUsername(), LONG_PASSWORD)
+                .clickRegisterBtn()
+                .checkPageIsOpened()
+                .checkErrorNotificationMessage("Allowed password length should be from 3 to 12 characters", RegistrationPage.class);
     }
 
     @Test
@@ -46,5 +79,14 @@ public class RegistrationTests extends BaseWebTest {
                 .enterCredentials(user.getUsername(), DEFAULT_PASSWORD)
                 .clickRegisterBtn()
                 .checkErrorNotificationMessage("Username `" + user.getUsername() + "` already exists", RegistrationPage.class);
+    }
+
+    @Test
+    @DisplayName("Проверить кнопку Войти")
+    void checkLoginButton() {
+        page(RegistrationPage.class)
+                .open()
+                .clickLoginBtn()
+                .checkPageIsOpened();
     }
 }

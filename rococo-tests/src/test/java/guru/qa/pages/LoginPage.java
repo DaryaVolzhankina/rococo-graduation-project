@@ -7,7 +7,10 @@ import io.qameta.allure.Step;
 import lombok.Getter;
 import org.openqa.selenium.support.FindBy;
 
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.page;
+import static com.codeborne.selenide.Selenide.webdriver;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Getter
 public class LoginPage extends BaseAuthPage<LoginPage> {
@@ -21,6 +24,15 @@ public class LoginPage extends BaseAuthPage<LoginPage> {
     @Step("Открыть страницу авторизации")
     public LoginPage open() {
         return Selenide.open(URL, LoginPage.class);
+    }
+
+    @Step("Проверить, открыта ли страница авторизации")
+    public LoginPage checkPageIsOpened() {
+        registerBtn
+                .shouldBe(visible);
+        assertThat(webdriver().driver().url())
+                .isEqualTo(URL);
+        return this;
     }
 
     @Step("Заполнить поля Имя пользователя и Пароль данными")
